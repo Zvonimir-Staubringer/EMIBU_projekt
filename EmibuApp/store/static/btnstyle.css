@@ -1,0 +1,34 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: poppins;
+}
+.btn-custom {
+    background-color: #45523e !important;
+    color: rgb(245, 236, 229) !important;
+    transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #37412d !important;
+}
+
+.btn-alert {
+    background-color: #ac2a13 !important;
+    color: rgb(245, 236, 229) !important;
+    transition: background-color 0.3s ease;
+}
+
+.btn-alert:hover {
+    background-color: #6c1c10 !important;
+}
+
+.btn-success {
+    background-color: #568d39 !important;
+    color: rgb(245, 236, 229) !important;
+    transition: background-color 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #405d23 !important;
+}

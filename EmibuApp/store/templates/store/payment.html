@@ -1,0 +1,55 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'btnstyle.css' %}">
+<div class="container">
+    <h1>Summary</h1>
+    <div class="row">
+        <div class="col-md-9">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_lines %}
+                    <tr>
+                        <td>{{ item.productID.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.productID.price }}</td>
+                        <td>${{ item.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h3>Total: ${{ order.total_price }}</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h1>Delivery information</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <p>First name: {{ order.first_name }}</p>
+            <p>Last name: {{ order.last_name }}</p>
+            <p>Email: {{ order.email }}</p>
+            <p>Address: {{ order.delivery_address }}</p>
+        </div>
+        <div class="col-md-2 mt-1"><a class="btn btn-custom" href="{% url 'home_page' %}">Back to start</a></div>
+    </div>
+</div>
+        {% if messages %}
+        <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        </div>
+        {% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'btnstyle.css' %}">
+<div class="container">
+    <h1 class="display-1">Order ID: {{ order.id }}</h1>
+    <h2 class="display-5"><strong>Customer:</strong> {{ order.first_name }} {{ order.last_name }} | {{ order.email }}</h2>
+    <div class="row">
+        <div class="col-md-9">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in order_lines %}
+                    <tr>
+                        <td><a href="{% url 'detail_name' order.productID.name %}">{{ order.productID.name }} <br>
+                            <img src="{{ order.productID.image }}" class="rounded" style="width: 140px; height: 140px; object-fit: cover;" alt="{{ order.productID.name }}">
+                        </a></td>
+                        <td>{{ order.quantity }}</td>
+                        <td>${{ order.productID.price }}</td>
+                        <td>${{ order.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h3>Total: ${{ order.total_price }}</h3>
+        </div>
+    </div>
+</div>
+{% endblock %}

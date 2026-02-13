@@ -1,0 +1,144 @@
+{% extends 'store/base.html' %}
+
+<!--USER DASHBOARD-->
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <h1 class="mb-5 mt-5">Hello <u>{{ user.customer.first_name }} {{ user.customer.last_name }}</u></h1>
+      <p class="mb-3 mt-3">Email: {{ user.customer.email }}</p>
+    </div>
+
+    <div class="col-md-12">
+      <h2 style="background-color: #45523e; color:rgb(245, 236, 229)" class="mb-4 mt-4"><span class="ml-3">Orders</span></h2>
+      <hr>
+    </div>
+
+    {% if orders %}
+      {% for order in orders %}
+      {% if order.processed %}
+      <div class="col-md-8">
+        <h2 class="mb-2 mt-3 d-inline-flex align-items-center">
+          <button class="btn btn-link p-0 d-flex align-items-center toggle-arrow" type="button" data-toggle="collapse" 
+          data-target="#orderDetails{{ order.id }}" aria-expanded="false" aria-controls="orderDetails{{ order.id }}"
+          style="text-decoration: none; color: inherit;">
+
+            <span class="arrow mr-2">▼</span>
+            <span style="font-size: 26px;">Order {{ order.customer_order_number }}</span>
+
+          </button>
+        </h2>
+        
+        <div class="collapse mt-2" id="orderDetails{{ order.id }}">
+          <p class="mb-3">Order date: {{ order.order_date }}</p>
+          <p class="mb-3">Total: ${{ order.total_price }}</p>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in order.orderline_set.all %}
+              <tr>
+                <td>{{ item.productID.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>${{ item.productID.price }}</td>
+                <td>${{ item.total_price }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    {% else %}
+      <div class="col-md-8">
+        <h4 class="text-muted">You don't have any orders yet.</h4>
+      </div>
+    {% endif %}
+
+    <div class="col-md-12">
+      <h2 style="background-color: #45523e; color:rgb(245, 236, 229)" class="mb-4 mt-4"><span class="ml-3">Custom requests</span></h2>
+      <hr>
+    </div>
+
+    {% if projects %}
+      <hr>
+      {% for project in projects %}
+      <div class="col-md-8">
+        <h2 class="mb-2 mt-3 d-inline-flex align-items-center">
+          <button class="btn btn-link p-0 d-flex align-items-center toggle-arrow" type="button" data-toggle="collapse" 
+          data-target="#projectDetails{{ project.id }}" aria-expanded="false" aria-controls="projectDetails{{ project.id }}"
+          style="text-decoration: none; color: inherit;">
+
+            <span class="arrow mr-2">▼</span>
+            <span style="font-size: 26px;">Project {{ project.title }}</span>
+
+          </button>
+        </h2>
+        
+        <div class="collapse mt-2" id="projectDetails{{ project.id }}">
+          <p class="mb-3">Request date: {{ project.request_date }}</p>
+          <p class="mb-3"><h5>Request:</h5> {{ project.request_text }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="col-md-8">
+      <h4 class="text-muted">You don't have any custom requests yet.</h4>
+    </div>
+    {% endif %}
+
+
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $(".toggle-arrow").click(function() {
+      $(this).find(".arrow").toggleClass("rotate");
+    });
+  });
+</script>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    font-family: poppins;
+  }
+
+  .toggle-arrow {
+    font-size: 12px;
+    color: #555;
+    border: none;
+    background: none;
+    outline: none;
+    transition: transform 0.3s ease;
+  }
+
+  .arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+
+  .rotate {
+    transform: rotate(180deg);
+  }
+
+  .btn-link {
+    text-decoration: none;
+  }
+</style>
+{% endblock content %}

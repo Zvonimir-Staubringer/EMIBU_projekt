@@ -1,0 +1,59 @@
+{% load static %}
+<html>
+  <head>
+    <title>
+        EMIBU
+        {% block title %}{% endblock %}
+    </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+    
+
+  </head>
+  <body style="background-color: #f5ece5; font-family: 'Poppins';">
+    <div class="page-header">
+      <nav class="navbar navbar-expand-lg" style="background-color: #45523e;">
+        <a class="navbar-brand" href="{% url 'home_page' %}" style="color: #F5F5E6;">EMIBU</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'products' %}" style="color: #F5F5E6;">Products</a>
+            </li>
+              <li class="nav-item">
+                {% if request.user.is_authenticated %}
+                  <a class="nav-link" href="{% url 'contact' %}" style="color: #F5F5E6;">Custom project</a>
+                {% endif %}
+              </li>
+          </ul>
+          <ul class="navbar-nav ml-auto">
+            {% if request.user.is_superuser %}
+              <a class="nav-link" href="{% url 'orders' %}" style="color: #F5F5E6;">Orders</a>
+            {% endif %}
+                <a class="btn btn-outline-dark" href="{% url 'cart_detail' %}" style="color: #F5F5E6;"> <i class="bi bi-cart-fill me-1"></i>
+                  Cart <span class="badge bg-dark text.white ms-1 rounded-pill">{{ cart_item_count }}</span></a>
+                {% if request.user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'dashboard' %}" style="color: #F5F5E6;">Profile</a>
+                    <a href="#" class="nav-link" style="color: #F5F5E6;" onclick="document.getElementById('logout-form').submit();">
+                      Logout
+                    </a>
+                    <form id="logout-form" action="{% url 'logout' %}" method="post" class="d-none">
+                        {% csrf_token %}
+                    </form>
+              {% else %}
+                    <a class="nav-link" href="{% url 'login' %}" style="color: #F5F5E6;">Login</a>
+                    <a class="nav-link" href="{% url 'register' %}" style="color: #F5F5E6;">Register</a>
+              {% endif %}
+          </ul>
+        </div>
+      </nav>
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+</html>

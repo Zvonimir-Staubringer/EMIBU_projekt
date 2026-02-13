@@ -1,0 +1,73 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'btnstyle.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+
+    
+<div class="container">
+    <h1 class="display-1">Your Shopping Cart</h1>
+    {% if not is_empty %}
+    <div class="row">
+        <div class="col-md-6">
+            <a href="{% url 'products' %}" class="btn btn-custom mt-1">Continue shopping</a>
+        </div>
+        <div class="col-md-9">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                    <tr>
+                        <td><a href="{% url 'detail' item.product.id %}" class="text-dark">{{ item.product.name }} <br>
+                            <img src="{{ item.product.image }}" class="rounded" style="width: 140px; height: 140px; object-fit: cover;" alt="{{ item.product.name }}">
+                        </a></td>
+                        <td>
+                            <form method="post" action="{% url 'cart_update' item.product.id %}">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control mb-2" style="width: 60px; display: inline-block;">
+                                <button type="submit" class="btn btn-custom">Update</button>
+                            </form>
+                        </td>
+                        <td>${{ item.price }}</td>
+                        <td>${{ item.total_price }}</td>
+                        <td>
+                            <a class="text-danger" href="{% url 'cart_remove' item.product.id %}">Remove</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h3>Total: ${{ cart.get_total_price }}</h3>
+            <div class="col-md-12 text-right">
+                <a href="{% url 'cart_clear' %}" class="btn btn-alert">Clear cart</a>
+                <form method="POST" action="{% url 'new_order' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success mt-2">Checkout</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+            {% if messages %}
+                <div class="container mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+            <h3>Seems like your cart is empty!</h3>
+            <a href="{% url 'products' %}" class="btn btn-custom mt-1">Start shopping now!</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

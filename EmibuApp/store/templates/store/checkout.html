@@ -1,0 +1,105 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'btnstyle.css' %}">
+{% if cart %}
+
+<div class="container">
+    <h1>Order summary</h1>
+    <div class="row">
+        <div class="col-md-9">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.product.price }}</td>
+                        <td>${{ item.total_price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h3>Total: ${{ cart.get_total_price }}</h3>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h1>Delivery information</h1>
+    <div class="row">
+        {% if messages %}
+        <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        </div>
+        <div class="col-md-12">
+            <form method="post" action="{% url 'payment' %}">
+                {% csrf_token %}
+                {% if request.user.is_authenticated %}
+                <p>
+                    <label>First name</label> <br>
+                    <input type="text" name="first_name" id="first_name" value="{{ request.user.customer.first_name }}">
+                </p>
+                <p>
+                    <label>Last name</label> <br>
+                    <input type="text" name="last_name" id="last_name" value="{{ request.user.customer.last_name }}">
+                </p>
+                <p>
+                    <label>Email</label> <br>
+                    <input type="text" name="email" id="email" value="{{ request.user.customer.email }}">
+                </p>
+                {% else %}
+                <p>
+                    <label>First name</label> <br>
+                    <input type="text" name="first_name" id="first_name">
+                </p>
+                <p>
+                    <label>Last name</label> <br>
+                    <input type="text" name="last_name" id="last_name">
+                </p>
+                <p>
+                    <label>Email</label> <br>
+                    <input type="text" name="email" id="email">
+                </p>
+                {% endif %}
+                <p>
+                    <label>Address</label> <br>
+                    <input type="text" name="address" id="address">
+                </p>
+                <p>
+                    <label>Card Number</label> <br>
+                    <input type="text" name="cardnumber" id="cardnumber">
+                </p>
+                <p>
+                    <label>Expiration Date</label> <br>
+                    <input type="text" name="expirationmonth" id="expirationmonth">
+                    <input type="text" name="expirationyear" id="expirationyear">
+                </p>
+                <p>
+                    <label>CVV</label> <br>
+                    <input type="text" name="CVVnumber" id="CVVnumber">
+                </p>
+                <p>
+                    <input type="submit" value="Purchase" class="btn btn-success mt-2">
+                </p>
+            </form>
+        </div>
+    </div>
+</div>
+{% else %}
+    <div class="container mt-4">
+        <div class="alert alert-danger">Something has gone wrong.</div>
+        <a href="{% url 'home_page' %}">Return to home</a>
+    </div>
+{% endif %}
+{% endblock %}

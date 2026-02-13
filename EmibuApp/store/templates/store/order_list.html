@@ -1,0 +1,77 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'btnstyle.css' %}">
+<div class="container">
+    
+    <div class="row">
+        <div class="col-md-6 mt-1">
+            <h1>Orders</h1>
+            <form method="GET" action="{% url 'orders' %}">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    {% if query_orders %}
+                        <input type="text" name="qo" class="form-control" placeholder="Search by customer name" value="{{ query_orders }}">
+                    {% else %}
+                        <input type="text" name="qo" class="form-control" placeholder="Search by customer name">
+                    {% endif %}
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+            <hr>
+            {% for order in orders %}
+                <h2>Order ID: <a href="{% url 'order_detail' order.id %}">{{ order.id }}</a></h2>
+                {% if order.customerID %}
+                <p>Customer: {{ order.customerID.first_name }} {{ order.customerID.last_name }}</p>
+                <p>Contact: <strong>{{ order.customerID.email }}</strong></p>
+                {% else %}
+                <p>Customer: Guest</p>
+                {% endif %}
+                <p>Shipping Address: {{ order.delivery_address }}</p>
+                <p>Date: {{ order.order_date }}</p>
+                <p>Total: ${{ order.total_price }}</p>
+                <ul>
+                {% for product in order.orderline_set.all %}
+                    <li>{{ product.productID.name }} - Quantity: {{ product.quantity }} - Price: ${{ product.productID.price }}</li>
+                {% endfor %}
+                </ul>
+                <hr>
+            {% endfor %}
+        </div>
+        <div class="col-md-6 mt-1">
+            <h1>Custom requests</h1>
+            <form method="GET" action="{% url 'orders' %}">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    {% if query_projects %}
+                        <input type="text" name="qp" class="form-control" placeholder="Search by customer name" value="{{ query_projects }}">
+                    {% else %}
+                        <input type="text" name="qp" class="form-control" placeholder="Search by customer name">
+                    {% endif %}
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+            <hr>
+            {% for project in projects %}
+                <h2>Project ID: {{ project.id }} {% if project.completed %} <i class="bi bi-check-circle text-success"></i> {% endif %}</h2> 
+                <p>Customer: {{ project.customerID.first_name }} {{ project.customerID.last_name }}</p>
+                <p>Date: {{ project.request_date }}</p>
+                <p><h4>Request:</h5> {{ project.request_text }}</p>
+                <p>Contact: <strong>{{ project.customerID.email }}</strong></p>
+                {% if project.completed %}
+                    <p><h5>Completed: <span class="text-success">Yes</span></h5></p>
+                {% else %}
+                    <p><h5>Completed: <span class="text-danger">No</span></h5></p>
+                    <a href="{% url 'project_complete' project.id %}" class="btn btn-success">Complete</a>
+                {% endif %}
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

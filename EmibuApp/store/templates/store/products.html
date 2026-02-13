@@ -1,0 +1,35 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'btnstyle.css' %}">
+<div class="container mt-4">
+
+    {% for type, products in product_types.items %}
+        <h2 class="text-uppercase" id="{{ type|lower|slugify }}">{{ type }}</h2>  {# Section Anchor #}
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-3 mb-3">
+                <div class="d-flex align-items-center border p-1 rounded" style="border-color: #45523e !important;">
+                    
+                    <a href="{% url 'detail' product.id %}">
+                        <img src="{{ product.image }}" class="rounded" style="width: 140px; height: 140px; object-fit: cover;" alt="{{ product.name }}">
+                    </a>
+                    
+                    <div class="d-flex flex-column" style="margin-left: 10px; height: 140px; flex: 1;"> 
+                        <h5 class="mb-2">{{ product.name|truncatechars:22  }}</h5>
+                        <div class="mt-auto">
+                            <p class="mb-1" style="font-size: 0.8rem;"><strong>Price:</strong> ${{ product.price }}</p>
+                            <form method="post" action="{% url 'cart_add' product.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-custom">Order</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <hr style="border: 1px solid #45523e;">
+    {% endfor %}
+</div>
+{% endblock content %}
